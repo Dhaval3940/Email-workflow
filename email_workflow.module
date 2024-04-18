@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Implements email module hook.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements workflow_entity_insert().
+ */
+function email_workflow_entity_insert(EntityInterface $entity) {
+  if ($entity->bundle() == 'entry' || $entity->bundle() == 'basic_page_collapsible') {
+    \Drupal::service('email_service')->mailTriggered($entity);
+  }
+}
+
+/**
+ * Implements workflow_entity_update().
+ */
+function email_workflow_entity_update(EntityInterface $entity) {
+  if ($entity->bundle() == 'entry' || $entity->bundle() == 'basic_page_collapsible') {
+    \Drupal::service('email_service')->mailfortranslations($entity);
+    \Drupal::service('email_service')->mailTriggered($entity);
+
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function email_workflow_mail($key, &$message, $params) {
+  $options = [
+    'langcode' => $message['langcode'],
+  ];
+  switch ($key) {
+    case 'review':
+      $message['from'] = $params['from'];
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+
+    case 'send_back_to_uploader':
+      $message['from'] = $params['from'];
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+
+    case 'published':
+    case 'translation':
+    case 'email_notification':
+      $message['from'] = $params['from'];
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+  }
+}

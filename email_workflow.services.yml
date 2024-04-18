@@ -1,0 +1,7 @@
+services:
+  email_service:
+    class: '\Drupal\email_workflow\Service\EmailService'
+  
+  email_workflow.email_notification:
+    class: Drupal\email_workflow\Service\EmailNotification
+    arguments: ['@request_stack', '@entity_type.manager',  '@plugin.manager.mail', '@database', '@logger.factory', '@date.formatter', '@config.factory']

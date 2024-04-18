@@ -1,0 +1,5 @@
+name: Email Workflow
+type: module
+description: Custom module to provide email notification functionality
+core_version_requirement: ^9 || ^10
+package: Custom
